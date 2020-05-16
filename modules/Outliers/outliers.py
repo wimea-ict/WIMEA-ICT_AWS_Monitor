@@ -8,8 +8,8 @@ import time
 
 mydb = mysql.connector.connect(
   host="localhost",
-  user="jmuhumuza",
-  passwd="joshua",
+  user="",
+  passwd="",
   database="wdrDb"
 
 )
