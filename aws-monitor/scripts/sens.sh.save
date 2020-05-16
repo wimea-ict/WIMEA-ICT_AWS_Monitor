@@ -1,0 +1,15 @@
+#!/bin/bash
+
+PTH=/usr/local/scripts # This directory
+DATA=/home/administrator/awslistener/data/mubende.dat # Data to be plotted
+DEST=/var/www/html/awsmonitor/aws-monitor/graphs # directory of plot files
+TMP=/tmp/mubende.dat # intermediary storage of filtered data to be plotted
+TMP_FINAL=/tmp/mubende2.dat
+
+tail -$2 $DATA | grep $1 >$TMP
+
+awk '{gsub(/,/," ");gsub(/RTC_T=/," ")}1' /tmp/mubende.dat >/tmp/mubs.dat
+DATA2=/tmp/mubs.dat
+
+if [ mbd-10m == $1 ]; then
+	tail -10000 /tmp/mubs.dat | grep mbd-10m | /bin/seltag -sel V_MCU=%s V_IN=%s > /tmp/mubende2.dat

@@ -1,0 +1,102 @@
+<!--page_specific_css_files  page_specific_script_files-->
+
+@extends('main')
+
+
+@section('page_specific_css_files')
+
+@endsection
+
+@section('content')
+<div class="row">
+
+
+    <!-- Accordions -->
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel-group" id="accordion-test-2">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion-test-2" href="#collapseOne-2" aria-expanded="false" class="collapsed">
+                                2m Node
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseOne-2" class="panel-collapse collapse in">
+                        <div class="panel-body">
+                            @include("reports.node2m")
+
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion-test-2" href="#collapseTwo-2" class="collapsed" aria-expanded="false">
+                                10m Node
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseTwo-2" class="panel-collapse collapse in">
+                        <div class="panel-body">
+                                @include("reports.node10m")
+
+                            </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion-test-2" href="#collapseThree-2" class="collapsed" aria-expanded="false">
+                                Ground Node
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseThree-2" class="panel-collapse collapse in">
+                        <div class="panel-body">
+                            @include("reports.nodegnd")
+                            </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion-test-2" href="#collapseFour-2" class="collapsed" aria-expanded="false">
+                                Sink Node
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseFour-2" class="panel-collapse collapse in">
+                        <div class="panel-body">
+                        @include("reports.nodesink")
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion-test-2" href="#collapseThree-2" class="collapsed" aria-expanded="false">
+                                Gateway
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseThree-2" class="panel-collapse collapse in">
+                        <div class="panel-body">
+                            @include("reports.gateway")
+                            </div>
+                    </div>
+                </div>                
+            </div>
+        </div>
+
+    </div> <!-- End row -->
+</div>
+
+@endsection
+
+@section('page_specific_script_files')
+
+    {{--  <s"https://cdn.plot.ly/plotly-latest.min.js"cript src="assets/morris/node2mcharts.js"></script>  --}}
+
+    <script>

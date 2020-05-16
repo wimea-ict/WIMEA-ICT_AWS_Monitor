@@ -1,0 +1,72 @@
+Return-Path: <>
+X-Original-To: etumwesigye@wimea.mak.ac.ug
+Delivered-To: etumwesigye@wimea.mak.ac.ug
+Received: by wimea.mak.ac.ug (Postfix)
+	id EBACD1DE10C2; Thu, 19 Apr 2018 16:46:52 +0300 (EAT)
+Date: Thu, 19 Apr 2018 16:46:52 +0300 (EAT)
+From: MAILER-DAEMON@wimea.mak.ac.ug (Mail Delivery System)
+Subject: Undelivered Mail Returned to Sender
+To: etumwesigye@wimea.mak.ac.ug
+Auto-Submitted: auto-replied
+MIME-Version: 1.0
+Content-Type: multipart/report; report-type=delivery-status;
+	boundary="EB1A41DE10C8.1524145612/wimea.mak.ac.ug"
+Message-Id: <20180419134652.EBACD1DE10C2@wimea.mak.ac.ug>
+
+This is a MIME-encapsulated message.
+
+--EB1A41DE10C8.1524145612/wimea.mak.ac.ug
+Content-Description: Notification
+Content-Type: text/plain; charset=us-ascii
+
+This is the mail system at host wimea.mak.ac.ug.
+
+I'm sorry to have to inform you that your message could not
+be delivered to one or more recipients. It's attached below.
+
+For further assistance, please send mail to postmaster.
+
+If you do so, please include this problem report. You can
+delete your own text from the attached returned message.
+
+                   The mail system
+
+<root@wimea.mak.ac.ug> (expanded from <root>): mail forwarding loop for
+    root@wimea.mak.ac.ug
+
+--EB1A41DE10C8.1524145612/wimea.mak.ac.ug
+Content-Description: Delivery report
+Content-Type: message/delivery-status
+
+Reporting-MTA: dns; wimea.mak.ac.ug
+X-Postfix-Queue-ID: EB1A41DE10C8
+X-Postfix-Sender: rfc822; etumwesigye@wimea.mak.ac.ug
+Arrival-Date: Thu, 19 Apr 2018 16:46:52 +0300 (EAT)
+
+Final-Recipient: rfc822; root@wimea.mak.ac.ug
+Original-Recipient: rfc822;root@wimea.mak.ac.ug
+Action: failed
+Status: 5.4.6
+Diagnostic-Code: X-Postfix; mail forwarding loop for root@wimea.mak.ac.ug
+
+--EB1A41DE10C8.1524145612/wimea.mak.ac.ug
+Content-Description: Undelivered Message
+Content-Type: message/rfc822
+
+Return-Path: <etumwesigye@wimea.mak.ac.ug>
+Received: by wimea.mak.ac.ug (Postfix)
+	id EB1A41DE10C8; Thu, 19 Apr 2018 16:46:52 +0300 (EAT)
+Delivered-To: root@wimea.mak.ac.ug
+Received: by wimea.mak.ac.ug (Postfix, from userid 1010)
+	id EA9F91DE10C2; Thu, 19 Apr 2018 16:46:52 +0300 (EAT)
+To: root@wimea.mak.ac.ug
+From: etumwesigye@wimea.mak.ac.ug
+Auto-Submitted: auto-generated
+Subject: *** SECURITY information for wimear3 ***
+Message-Id: <20180419134652.EA9F91DE10C2@wimea.mak.ac.ug>
+Date: Thu, 19 Apr 2018 16:46:52 +0300 (EAT)
+
+wimear3 : Apr 19 16:46:52 : etumwesigye : user NOT in sudoers ; TTY=pts/2 ; PWD=/home/etumwesigye ; USER=root ; COMMAND=/usr/bin/apt-get update
+
+
+--EB1A41DE10C8.1524145612/wimea.mak.ac.ug--

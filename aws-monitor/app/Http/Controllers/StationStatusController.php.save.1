@@ -1,0 +1,272 @@
+<?php
+
+namespace station\Http\Controllers;
+
+use App\layouts;
+use station\Station;
+use station\TwoMeterNode;
+use station\TenMeterNode;
+use station\SinkNode;
+use station\GroundNode;
+use station\Sensor;
+use station\ReportIntervalClusters;
+use station\ChangeTracker;
+use station\Problems;
+use station\PotentialProblem;
+use station\DetectedAnalyzerProblems;
+use Illuminate\Http\Request;
+
+class StationStatusController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {  
+        $stations_with_problems = array();
+        $problems_identified = array();
+        //$last_receive_twom = TwoMeterNode::get()->toArray();
+        //$last_receiveground =GroundNode::select('node_id')->get();
+        $problems_identified = DetectedAnalyzerProblems::where('status', '<>','fixed')->orderBy('id', 'DESC')->orderBy('stationID','DESC')->get()->toArray(); 
+        $clusters = ReportIntervalClusters::get()->toArray(); //DB::table('ReportIntervalClusters')->get()->toArray();       
+        $changetracker = ChangeTracker::get()->toArray();
+        $stations = Station::all()->where("stationCategory","aws");
+        return view('layouts.viewStationStatus', compact('problems_identified','clusters','changetracker','stations'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {  
+        $ids = array();
+        $TwomNode = TwoMeterNode::where('station_id', $id)->first()->toArray();
+        //dd($TwomNode);
+        $TenmNode =TenMeterNode::where('station_id', $id)->first()->toArray();
+        $sinknode =SinkNode::where('station_id', $id)->first()->toArray();
+        $groundNode =GroundNode::where('station_id', $id)->first()->toArray();
+
+        $twoMFlag = 0;
+        $tenMFlag = 0;
+        $gndFlag = 0;
+        $sinkFlag = 0;
+        $TempSensorFlag = 0;
+        $SoilMoistureFlag = 0;
+        $SoilTempFlag = 0;
+        $PreciptationFlag = 0;
+        $PressureFlag = 0;
+        $RainfallFlag = 0;
+        $WindSpeedFlag = 0;
+        $WindDirectionFlag = 0;
+        $insolationFlag = 0;
+        $relativeHumidity = 0;
+
+
+
+        //$problems = Problems::where('')
+
+        $stationTaken = Station::where('station_id', $id)->first()->toArray();
+        $problems = Problems::where('status', 'reported')->where( function ( $query )
+        {
+            $query->where('classification_id', '1')->orwhere('classification_id','2');
+        })->get()->toArray();
+        //dd($problems);
+        if(!empty($problems)){
+        foreach($problems as $problem){
+            if($problem['source']=="station"){
+                if($problem['source_id']== $id){
+                    array_push($ids,array("id"=>$id, "source"=>$problem['source']));
+                    $twoMFlag = 1;
+                    $tenMFlag = 1;
+                    $gndFlag = 1;
+                    $sinkFlag = 1;
+                    $TempSensorFlag = 1;
+                    $SoilMoistureFlag = 1;
+                    $SoilTempFlag = 1;
+                    $PreciptationFlag = 1;
+                    $PressureFlag = 1;
+                    $RainfallFlag = 1;
+                    $WindSpeedFlag = 1;
+                    $WindDirectionFlag = 1;
+                    $insolationFlag = 1;
+                    $relativeHumidity = 1;
+                }
+            }
+            elseif($problem['source']=="twoMeterNode"){
+                if(!empty($TwomNode)){
+                    if($problem['source_id']==$TwomNode['node_id']){
+                        array_push($ids,array("id"=>$TwomNode['node_id'], "source"=>$problem['source']));
+                        $twoMFlag = 1;
+                        $TempSensorFlag = 1;
+                        $relativeHumidity = 1;
+                    }
+                }
+            }
+            elseif($problem['source']=="tenMeterNode"){
+                if(!empty($TenmNode)){
+                    if($problem['source_id']==$TenmNode['node_id']){
+                        array_push($ids,array("id"=>$TenmNode['node_id'], "source"=>$problem['source']));
+                        $tenMFlag = 1;
+                        $WindSpeedFlag = 1;
+                        $WindDirectionFlag = 1;
+                        $insolationFlag = 1;
+                    }
+                }
+            }
+            elseif($problem['source']=="groundNode"){
+                if(!empty($groundNode)){
+                    if($problem['source_id']==$groundNode['node_id']){
+                        array_push($ids,array("id"=>$groundNode['node_id'], "source"=>$problem['source']));
+                        $gndFlag = 1;
+                        $SoilMoistureFlag = 1;
+                        $SoilTempFlag = 1;
+                        $PreciptationFlag = 1;
+                    }
+                }
+            }
+            elseif($problem['source']=="sinkNode"){
+                if(!empty($sinknode)){
+                    if($problem['source_id']==$sinknode['node_id']){
+                        array_push($ids,array("id"=>$sinknode['node_id'], "source"=>$problem['source']));
+                        $sinkFlag = 1;
+                        $PressureFlag = 1;
+                    }
+                }
+            }
+        }
+        $sensorproblems = Problems::where('status', 'reported')->where('classification_id', '3')->pluck('source_id')->all();
+
+        $sensors = Sensor::whereIn('id', $sensorproblems)->get();
+        $Twomnodesensors = Sensor::whereIn('id', $sensors)->where('node_id', $TwomNode['node_id'])->get()->toArray();
+        if(!empty($Twomnodesensors)){
+            foreach($Twomnodesensors as $Twomnodesensor){
+                if($Twomnodesensor['parameter_read']=='Temperature'){
+                    array_push($ids,array("id"=>$Twomnodesensor['id'], "source"=>"sensor"));
+                    $TempSensorFlag = 1;
+                }
+                if($Twomnodesensor['parameter_read']=='relative humidity'){
+                    array_push($ids,array("id"=>$Twomnodesensor['id'], "source"=>"sensor"));
+                    $relativeHumidity = 1;
+                }
+            }
+        }
+        
+        $Tenmnodesensors = Sensor::whereIn('id', $sensors)->where('node_id', $TenmNode['node_id'])->get()->toArray();
+        if(!empty($Tenmnodesensors)){
+
+            foreach($Tenmnodesensors as $Tenmnodesensor){
+                if($Tenmnodesensor['parameter_read']=='wind speed'){
+                    array_push($ids,array("id"=>$Tenmnodesensor['id'], "source"=>"sensor"));
+                    $WindSpeedFlag = 1;
+                }
+                if($Tenmnodesensor['parameter_read']=='wind direction'){
+                    array_push($ids,array("id"=>$Tenmnodesensor['id'], "source"=>"sensor"));
+                    $WindDirectionFlag = 1;
+                }
+                if($Tenmnodesensor['parameter_read']=='insolation'){
+                    array_push($ids,array("id"=>$Tenmnodesensor['id'], "source"=>"sensor"));
+                    $insolationFlag = 1;
+                }
+            }
+        }
+        $Groundnodesensors = Sensor::whereIn('id', $sensors)->where('node_id', $groundNode['node_id'])->get()->toArray();
+        if(!empty($Groundnodesensors)){
+
+            foreach($Groundnodesensors as $Groundnodesensor){
+                if($Groundnodesensor['parameter_read']=='soil temperature'){
+                    array_push($ids,array("id"=>$Groundnodesensor['id'], "source"=>"sensor"));
+                    $SoilTempFlag = 1;
+                }
+                if($Groundnodesensor['parameter_read']=='soil moisture'){
+                    array_push($ids,array("id"=>$Groundnodesensor['id'], "source"=>"sensor"));
+                    $SoilMoistureFlag = 1;
+                }
+                if($Groundnodesensor['parameter_read']=='preciptation'){
+                    array_push($ids,array("id"=>$Groundnodesensor['id'], "source"=>"sensor"));
+                    $PreciptationFlag = 1;
+                }
+            }
+        }
+        $sinkNodesensors = Sensor::whereIn('id', $sensors)->where('node_id', $sinknode['node_id'])->get()->toArray();
+        }
+        if(!empty($sinkNodesensors)){
+
+            foreach($sinkNodesensors as $sinkNodesensor){
+                if($sinkNodesensor['parameter_read']=='pressure'){
+                    array_push($ids,array("id"=>$sinkNodesensors['id'], "source"=>"sensor"));
+                    $PressureFlag = 1;
+                }
+
+            }
+        }
+
+
+        $problemsForStation = array();
+
+        $problemsDesc =array_column($problemsForStation, 'problem_description');
+        $problemFrequencies =array_count_values($problemsDesc);
+
+
+        return view('layouts.selectedStationStatus',compact('twoMFlag','tenMFlag','gndFlag','sinkFlag','TempSensorFlag','SoilMoistureFlag','SoilTempFlag','PreciptationFlag','PressureFlag','RainfallFlag','WindSpeedFlag','WindDirectionFlag','insolationFlag','relativeHumidity','stationTaken','problemsForStation','problemFrequencies'));
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        //
+    }
+}

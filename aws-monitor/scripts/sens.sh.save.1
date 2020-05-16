@@ -1,0 +1,78 @@
+#!/bin/bash
+
+
+
+#Copying files to public folder
+tail -1000 /home/administrator/awslistener/data/mubende.dat  > /var/www/html/awsmonitor/aws-monitor/public/files/mubende.dat
+tail -1000 /home/administrator/awslistener/data/makerere.dat > /var/www/html/awsmonitor/aws-monitor/public/files/makerere.dat
+tail -1000 /home/administrator/awslistener/data/entebbe.dat  > /var/www/html/awsmonitor/aws-monitor/public/files/entebbe.dat
+tail -1000 /home/administrator/awslistener/data/lwengo.dat   > /var/www/html/awsmonitor/aws-monitor/public/files/lwengo.dat
+tail -1000 /home/administrator/awslistener/data/buyende_2.dat   > /var/www/html/awsmonitor/aws-monitor/public/files/buyende_2.dat
+
+#Remove RTC and the comas
+awk '{gsub(/,/," ");gsub(/RTC_T=/," ")}1' /var/www/html/awsmonitor/aws-monitor/public/files/mubende.dat   > /var/www/html/awsmonitor/aws-monitor/public/files/tmp_mubende.dat
+awk '{gsub(/,/," ");gsub(/RTC_T=/," ")}1' /var/www/html/awsmonitor/aws-monitor/public/files/makerere.dat  > /var/www/html/awsmonitor/aws-monitor/public/files/tmp_makerere.dat
+awk '{gsub(/,/," ");gsub(/RTC_T=/," ")}1' /var/www/html/awsmonitor/aws-monitor/public/files/entebbe.dat   > /var/www/html/awsmonitor/aws-monitor/public/files/tmp_entebbe.dat
+awk '{gsub(/,/," ");gsub(/RTC_T=/," ")}1' /var/www/html/awsmonitor/aws-monitor/public/files/lwengo.dat    > /var/www/html/awsmonitor/aws-monitor/public/files/tmp_lwengo.dat
+awk '{gsub(/,/," ");gsub(/RTC_T=/," ")}1' /var/www/html/awsmonitor/aws-monitor/public/files/buyende_2.dat > /var/www/html/awsmonitor/aws-monitor/public/files/tmp_buyende.dat
+
+#Selecting Mubende records for plotting
+tail -1000 /var/www/html/awsmonitor/aws-monitor/public/files/tmp_mubende.dat | grep mbd-2m     | /bin/seltag -sel V_MCU=%s V_IN=%s T_SHT2X=%s RH_SHT2X=%s |grep -v 'Miss' > /var/www/html/awsmonitor/aws-monitor/public/files/mubende_2m.dat
+tail -1000 /var/www/html/awsmonitor/aws-monitor/public/files/tmp_mubende.dat | grep mbd-10m    | /bin/seltag -sel V_MCU=%s V_IN=%s V_A1=%s V_A2=%s |grep -v 'Miss' > /var/www/html/awsmonitor/aws-monitor/public/files/mubende_10m.dat
+tail -1000 /var/www/html/awsmonitor/aws-monitor/public/files/tmp_mubende.dat | grep mbd-gnd    | /bin/seltag -sel V_MCU=%s V_IN=%s T1=%s V_A1=%s |grep -v 'Miss' > /var/www/html/awsmonitor/aws-monitor/public/files/mubende_gnd.dat
+tail -1000 /var/www/html/awsmonitor/aws-monitor/public/files/tmp_mubende.dat | grep mbdg3-sink | /bin/seltag -sel V_MCU=%s V_IN=%s T=%s  |grep -v 'Miss' > /var/www/html/awsmonitor/aws-monitor/public/files/mubende_sink.dat
+
+#Selecting Makerere records for plotting
+tail -1000 /var/www/html/awsmonitor/aws-monitor/public/files/tmp_makerere.dat | grep makg3-2m   | /bin/seltag -sel V_MCU=%s V_IN=%s T_SHT2X=%s RH_SHT2X=%s |grep -v 'Miss' > /var/www/html/awsmonitor/aws-monitor/public/files/makerere_2m.dat
+tail -1000 /var/www/html/awsmonitor/aws-monitor/public/files/tmp_makerere.dat | grep makg3-10m  | /bin/seltag -sel V_MCU=%s V_IN=%s V_A1=%s V_A2=%s | grep -v 'Miss' > /var/www/html/awsmonitor/aws-monitor/public/files/makerere_10m.dat
+tail -1000 /var/www/html/awsmonitor/aws-monitor/public/files/tmp_makerere.dat | grep mak-gnd    | /bin/seltag -sel V_MCU=%s V_IN=%s T1=%s V_A1=%s | grep -v 'Miss' > /var/www/html/awsmonitor/aws-monitor/public/files/makerere_gnd.dat
+tail -1000 /var/www/html/awsmonitor/aws-monitor/public/files/tmp_makerere.dat | grep makg2-sink | /bin/seltag -sel V_MCU=%s V_IN=%s T=%s  | grep -v 'Miss' > /var/www/html/awsmonitor/aws-monitor/public/files/makerere_sink.dat
+
+#Selecting Entebbe data for plotting
+tail -1000 /var/www/html/awsmonitor/aws-monitor/public/files/tmp_entebbe.dat | grep ebbs_2m     | /bin/seltag -sel V_MCU=%s V_IN=%s T_SHT2X=%s RH_SHT2X=%s | grep -v 'Miss' > /var/www/html/awsmonitor/aws-monitor/public/files/entebbe_2m.dat
+tail -1000 /var/www/html/awsmonitor/aws-monitor/public/files/tmp_entebbe.dat | grep ebbs_10m    | /bin/seltag -sel V_MCU=%s V_IN=%s V_A1=%s V_A2=%s | grep -v 'Miss' > /var/www/html/awsmonitor/aws-monitor/public/files/entebbe_10m.dat
+tail -1000 /var/www/html/awsmonitor/aws-monitor/public/files/tmp_entebbe.dat | grep ebb-gnd     | /bin/seltag -sel V_MCU=%s V_IN=%s T1=%s V_A1=%s |grep -v 'Miss' > /var/www/html/awsmonitor/aws-monitor/public/files/entebbe_gnd.dat
+tail -1000 /var/www/html/awsmonitor/aws-monitor/public/files/tmp_entebbe.dat | grep ebbg3-sink  | /bin/seltag -sel V_MCU=%s V_IN=%s T=%s  |grep -v 'Miss' > /var/www/html/awsmonitor/aws-monitor/public/files/entebbe_sink.dat
+
+#Selecting Lwengo data for plotting
+tail -1000 /var/www/html/awsmonitor/aws-monitor/public/files/tmp_lwengo.dat | grep lwg-2m     | /bin/seltag -sel V_MCU=%s V_IN=%s T_SHT2X=%s RH_SHT2X=%s | grep -v 'Miss' > /var/www/html/awsmonitor/aws-monitor/public/files/lwengo_2m.dat
+tail -1000 /var/www/html/awsmonitor/aws-monitor/public/files/tmp_lwengo.dat | grep lwg-10m    | /bin/seltag -sel V_MCU=%s V_IN=%s V_A1=%s V_A2=%s | grep -v 'Miss' > /var/www/html/awsmonitor/aws-monitor/public/files/lwengo_10m.dat
+tail -1000 /var/www/html/awsmonitor/aws-monitor/public/files/tmp_lwengo.dat | grep lwg-gnd    | /bin/seltag -sel V_MCU=%s V_IN=%s T1=%s V_A1=%s | grep -v 'Miss' > /var/www/html/awsmonitor/aws-monitor/public/files/lwengo_gnd.dat
+tail -1000 /var/www/html/awsmonitor/aws-monitor/public/files/tmp_lwengo.dat | grep lwgg3-sink | /bin/seltag -sel V_MCU=%s V_IN=%s T=%s  | grep -v 'Miss' > /var/www/html/awsmonitor/aws-monitor/public/files/lwengo_sink.dat
+
+#Selecting Buyende records for plotting
+tail -1000 /var/www/html/awsmonitor/aws-monitor/public/files/tmp_buyende.dat | grep byd-2-2m     | /bin/seltag -sel V_MCU=%s V_IN=%s T_SHT2X=%s RH_SHT2X=%s | grep -v 'Miss' > /var/www/html/awsmonitor/aws-monitor/public/files/buyende_2m.dat
+tail -1000 /var/www/html/awsmonitor/aws-monitor/public/files/tmp_buyende.dat | grep byd-2-10m    | /bin/seltag -sel V_MCU=%s V_IN=%s V_A1=%s V_A2=%s | grep -v 'Miss' > /var/www/html/awsmonitor/aws-monitor/public/files/buyende_10m.dat
+tail -1000 /var/www/html/awsmonitor/aws-monitor/public/files/tmp_buyende.dat | grep byd-2-gnd    | /bin/seltag -sel V_MCU=%s V_IN=%s T1=%s V_A1=%s | grep -v 'Miss' > /var/www/html/awsmonitor/aws-monitor/public/files/buyende_gnd.dat
+tail -1000 /var/www/html/awsmonitor/aws-monitor/public/files/tmp_buyende.dat | grep byd-2g3-sink | /bin/seltag -sel V_MCU=%s V_IN=%s T=%s | grep -v 'Miss' > /var/www/html/awsmonitor/aws-monitor/public/files/buyende_sink.dat
+
+
+#sort Mubende data
+sort /var/www/html/awsmonitor/aws-monitor/public/files/mubende_2m.csv
+sort /var/www/html/awsmonitor/aws-monitor/public/files/mubende_10m.csv
+sort /var/www/html/awsmonitor/aws-monitor/public/files/mubende_gnd.csv
+sort /var/www/html/awsmonitor/aws-monitor/public/files/mubende_sink.csv
+
+#sort Makerere data
+sort /var/www/html/awsmonitor/aws-monitor/public/files/makerere_2m.csv
+sort /var/www/html/awsmonitor/aws-monitor/public/files/makerere_10m.csv
+sort /var/www/html/awsmonitor/aws-monitor/public/files/makerere_gnd.csv
+sort /var/www/html/awsmonitor/aws-monitor/public/files/makerere_sink.csv
+
+#sort Entebbe data
+sort /var/www/html/awsmonitor/aws-monitor/public/files/entebbe_2m.csv
+sort /var/www/html/awsmonitor/aws-monitor/public/files/entebbe_10m.csv
+sort /var/www/html/awsmonitor/aws-monitor/public/files/entebbe_gnd.csv
+sort /var/www/html/awsmonitor/aws-monitor/public/files/entebbe_sink.csv
+
+#sort Lwengo data
+sort /var/www/html/awsmonitor/aws-monitor/public/files/lwengo_2m.csv
+sort /var/www/html/awsmonitor/aws-monitor/public/files/lwengo_10m.csv
+sort /var/www/html/awsmonitor/aws-monitor/public/files/lwengo_gnd.csv
+sort /var/www/html/awsmonitor/aws-monitor/public/files/lwengo_sink.csv
+
+#sort Buyende data
+sort /var/www/html/awsmonitor/aws-monitor/public/files/buyende_2m.csv
+sort /var/www/html/awsmonitor/aws-monitor/public/files/buyende_10m.csv
+sort /var/www/html/awsmonitor/aws-monitor/public/files/buyende_gnd.csv
+sort
